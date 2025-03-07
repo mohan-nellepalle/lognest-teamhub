@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -12,6 +13,8 @@ import Projects from "./pages/Projects";
 import Teams from "./pages/Teams";
 import Tasks from "./pages/Tasks";
 import WorkLogs from "./pages/WorkLogs";
+import Reports from "./pages/Reports";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -64,6 +67,22 @@ const App = () => (
               <ProtectedRoute>
                 <SidebarProvider>
                   <WorkLogs />
+                </SidebarProvider>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/reports" element={
+              <ProtectedRoute>
+                <SidebarProvider>
+                  <Reports />
+                </SidebarProvider>
+              </ProtectedRoute>
+            } />
+            
+            <Route path="/settings" element={
+              <ProtectedRoute>
+                <SidebarProvider>
+                  <Settings />
                 </SidebarProvider>
               </ProtectedRoute>
             } />
