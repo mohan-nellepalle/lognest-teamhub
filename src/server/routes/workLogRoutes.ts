@@ -1,5 +1,5 @@
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { WorkLog, Task } from '../../models';
 import { protect } from '../middleware/auth';
 
@@ -8,7 +8,7 @@ const router = express.Router();
 // @desc    Get all work logs
 // @route   GET /api/worklogs
 // @access  Private
-router.get('/', protect, async (req, res) => {
+router.get('/', protect, async (req: Request, res: Response) => {
   try {
     const { userId, taskId, projectId, startDate, endDate } = req.query;
     
@@ -57,7 +57,7 @@ router.get('/', protect, async (req, res) => {
 // @desc    Get work log by ID
 // @route   GET /api/worklogs/:id
 // @access  Private
-router.get('/:id', protect, async (req, res) => {
+router.get('/:id', protect, async (req: Request, res: Response) => {
   try {
     const workLog = await WorkLog.findById(req.params.id)
       .populate('userId', 'name email')
@@ -87,7 +87,7 @@ router.get('/:id', protect, async (req, res) => {
 // @desc    Create a work log
 // @route   POST /api/worklogs
 // @access  Private
-router.post('/', protect, async (req, res) => {
+router.post('/', protect, async (req: Request, res: Response) => {
   try {
     const { taskId, description, timeSpent, date } = req.body;
     
@@ -125,7 +125,7 @@ router.post('/', protect, async (req, res) => {
 // @desc    Update a work log
 // @route   PUT /api/worklogs/:id
 // @access  Private
-router.put('/:id', protect, async (req, res) => {
+router.put('/:id', protect, async (req: Request, res: Response) => {
   try {
     const workLog = await WorkLog.findById(req.params.id);
     
@@ -171,7 +171,7 @@ router.put('/:id', protect, async (req, res) => {
 // @desc    Delete a work log
 // @route   DELETE /api/worklogs/:id
 // @access  Private
-router.delete('/:id', protect, async (req, res) => {
+router.delete('/:id', protect, async (req: Request, res: Response) => {
   try {
     const workLog = await WorkLog.findById(req.params.id);
     

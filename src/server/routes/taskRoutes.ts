@@ -1,5 +1,5 @@
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { Task } from '../../models';
 import { protect } from '../middleware/auth';
 
@@ -8,7 +8,7 @@ const router = express.Router();
 // @desc    Get all tasks
 // @route   GET /api/tasks
 // @access  Private
-router.get('/', protect, async (req, res) => {
+router.get('/', protect, async (req: Request, res: Response) => {
   try {
     const { projectId, assignedTo, status } = req.query;
     
@@ -41,7 +41,7 @@ router.get('/', protect, async (req, res) => {
 // @desc    Get task by ID
 // @route   GET /api/tasks/:id
 // @access  Private
-router.get('/:id', protect, async (req, res) => {
+router.get('/:id', protect, async (req: Request, res: Response) => {
   try {
     const task = await Task.findById(req.params.id)
       .populate('projectId', 'name')
@@ -62,7 +62,7 @@ router.get('/:id', protect, async (req, res) => {
 // @desc    Create a task
 // @route   POST /api/tasks
 // @access  Private
-router.post('/', protect, async (req, res) => {
+router.post('/', protect, async (req: Request, res: Response) => {
   try {
     const { 
       title, 
@@ -103,7 +103,7 @@ router.post('/', protect, async (req, res) => {
 // @desc    Update a task
 // @route   PUT /api/tasks/:id
 // @access  Private
-router.put('/:id', protect, async (req, res) => {
+router.put('/:id', protect, async (req: Request, res: Response) => {
   try {
     const task = await Task.findById(req.params.id);
     
@@ -157,7 +157,7 @@ router.put('/:id', protect, async (req, res) => {
 // @desc    Delete a task
 // @route   DELETE /api/tasks/:id
 // @access  Private
-router.delete('/:id', protect, async (req, res) => {
+router.delete('/:id', protect, async (req: Request, res: Response) => {
   try {
     const task = await Task.findById(req.params.id);
     

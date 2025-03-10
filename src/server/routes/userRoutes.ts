@@ -1,5 +1,5 @@
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { User } from '../../models';
 import { protect, admin, hr } from '../middleware/auth';
 
@@ -8,7 +8,7 @@ const router = express.Router();
 // @desc    Get all users
 // @route   GET /api/users
 // @access  Private/Admin or HR
-router.get('/', protect, hr, async (req, res) => {
+router.get('/', protect, hr, async (req: Request, res: Response) => {
   try {
     const users = await User.find({}).select('-password');
     res.json(users);
@@ -21,7 +21,7 @@ router.get('/', protect, hr, async (req, res) => {
 // @desc    Get user by ID
 // @route   GET /api/users/:id
 // @access  Private
-router.get('/:id', protect, async (req, res) => {
+router.get('/:id', protect, async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.params.id).select('-password');
     
@@ -44,7 +44,7 @@ router.get('/:id', protect, async (req, res) => {
 // @desc    Update user
 // @route   PUT /api/users/:id
 // @access  Private/Admin or User themselves
-router.put('/:id', protect, async (req, res) => {
+router.put('/:id', protect, async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.params.id);
     
@@ -92,7 +92,7 @@ router.put('/:id', protect, async (req, res) => {
 // @desc    Delete user
 // @route   DELETE /api/users/:id
 // @access  Private/Admin
-router.delete('/:id', protect, admin, async (req, res) => {
+router.delete('/:id', protect, admin, async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.params.id);
     

@@ -1,5 +1,5 @@
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { User } from '../../models';
 import generateToken from '../utils/generateToken';
 import bcrypt from 'bcryptjs';
@@ -9,7 +9,7 @@ const router = express.Router();
 // @desc    Login user & get token
 // @route   POST /api/auth/login
 // @access  Public
-router.post('/login', async (req, res) => {
+router.post('/login', async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
@@ -47,7 +47,7 @@ router.post('/login', async (req, res) => {
 // @desc    Register a new user
 // @route   POST /api/auth/register
 // @access  Public
-router.post('/register', async (req, res) => {
+router.post('/register', async (req: Request, res: Response) => {
   try {
     const { name, email, password, role } = req.body;
 

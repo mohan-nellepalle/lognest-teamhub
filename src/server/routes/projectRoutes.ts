@@ -1,5 +1,5 @@
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { Project, Task } from '../../models';
 import { protect, admin } from '../middleware/auth';
 
@@ -8,7 +8,7 @@ const router = express.Router();
 // @desc    Get all projects
 // @route   GET /api/projects
 // @access  Private
-router.get('/', protect, async (req, res) => {
+router.get('/', protect, async (req: Request, res: Response) => {
   try {
     const projects = await Project.find({})
       .populate('team', 'name')
@@ -23,7 +23,7 @@ router.get('/', protect, async (req, res) => {
 // @desc    Get project by ID
 // @route   GET /api/projects/:id
 // @access  Private
-router.get('/:id', protect, async (req, res) => {
+router.get('/:id', protect, async (req: Request, res: Response) => {
   try {
     const project = await Project.findById(req.params.id)
       .populate('team', 'name email')
@@ -48,7 +48,7 @@ router.get('/:id', protect, async (req, res) => {
 // @desc    Create a project
 // @route   POST /api/projects
 // @access  Private
-router.post('/', protect, async (req, res) => {
+router.post('/', protect, async (req: Request, res: Response) => {
   try {
     const { name, description, status, type, deadline, team } = req.body;
     
@@ -73,7 +73,7 @@ router.post('/', protect, async (req, res) => {
 // @desc    Update a project
 // @route   PUT /api/projects/:id
 // @access  Private
-router.put('/:id', protect, async (req, res) => {
+router.put('/:id', protect, async (req: Request, res: Response) => {
   try {
     const project = await Project.findById(req.params.id);
     
@@ -112,7 +112,7 @@ router.put('/:id', protect, async (req, res) => {
 // @desc    Delete a project
 // @route   DELETE /api/projects/:id
 // @access  Private/Admin or Creator
-router.delete('/:id', protect, async (req, res) => {
+router.delete('/:id', protect, async (req: Request, res: Response) => {
   try {
     const project = await Project.findById(req.params.id);
     
