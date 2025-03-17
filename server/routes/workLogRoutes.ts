@@ -1,6 +1,6 @@
 
 import express, { Request, Response } from 'express';
-import { WorkLog, Task } from '../../models';
+import { WorkLog, Task } from '../../../services/models';
 import { protect } from '../middleware/auth';
 
 const router = express.Router();

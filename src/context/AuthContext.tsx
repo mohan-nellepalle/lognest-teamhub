@@ -1,6 +1,7 @@
-
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { useToast } from "@/components/ui/use-toast";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 // Define the User type
 type User = {
@@ -11,7 +12,6 @@ type User = {
   avatar?: string;
 };
 
-// Define the AuthContext type
 type AuthContextType = {
   user: User | null;
   isAuthenticated: boolean;
@@ -20,36 +20,7 @@ type AuthContextType = {
   logout: () => void;
 };
 
-// Create context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
-
-// Sample user data
-const SAMPLE_USERS = [
-  {
-    id: '1',
-    name: 'Admin User',
-    email: 'admin@example.com',
-    password: 'admin123',
-    role: 'admin',
-    avatar: '/avatar-admin.jpg',
-  },
-  {
-    id: '2',
-    name: 'Employee User',
-    email: 'employee@example.com',
-    password: 'employee123',
-    role: 'employee',
-    avatar: '/avatar-employee.jpg',
-  },
-  {
-    id: '3',
-    name: 'HR User',
-    email: 'hr@example.com',
-    password: 'hr123',
-    role: 'hr',
-    avatar: '/avatar-hr.jpg',
-  },
-];
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -57,7 +28,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is stored in localStorage
     const storedUser = localStorage.getItem('worklog_user');
     if (storedUser) {
       try {
@@ -72,37 +42,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
-    
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Find user with matching email and password
-    const foundUser = SAMPLE_USERS.find(
-      u => u.email === email && u.password === password
-    );
-    
-    if (foundUser) {
-      // Create a user object without the password
-      const { password, ...userWithoutPassword } = foundUser;
-      
-      // Store user in state and localStorage
-      setUser(userWithoutPassword as User);
-      localStorage.setItem('worklog_user', JSON.stringify(userWithoutPassword));
-      
+    try {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+
+      setUser(data.user);
+      localStorage.setItem('worklog_user', JSON.stringify(data.user));
       toast({
         title: "Login Successful",
-        description: `Welcome back, ${userWithoutPassword.name}`,
+        description: `Welcome back, ${data.user.name}`,
       });
-    } else {
+    } catch (error: any) {
       toast({
         title: "Login Failed",
-        description: "Invalid email or password",
+        description: error.message,
         variant: "destructive",
       });
-      throw new Error('Invalid email or password');
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   const logout = () => {
@@ -115,24 +85,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthenticated: !!user,
-        isLoading,
-        login,
-        logout,
-      }}
-    >
+    <AuthContext.Provider value={{ user, isAuthenticated: !!user, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// Custom hook to use the auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;

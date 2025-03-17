@@ -1,6 +1,6 @@
 
 import express from 'express';
-import { WorkLog, Project, User, Team, Task } from '../../models';
+import { WorkLog, Project, User, Team, Task } from '../../../services/models';
 import { protect, admin, hr } from '../middleware/auth';
 import mongoose from 'mongoose';
 

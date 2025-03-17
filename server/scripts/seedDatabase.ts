@@ -2,7 +2,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
-import { User, Project, Task, Team, WorkLog } from '../../models';
+import { User, Project, Task, Team, WorkLog } from '../../../services/models';
 import connectDB from '../../db/connection';
 
 dotenv.config();

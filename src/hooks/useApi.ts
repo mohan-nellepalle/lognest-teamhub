@@ -1,6 +1,6 @@
 
 import { useQuery, useMutation, QueryClient, QueryKey } from '@tanstack/react-query';
-import * as api from '../services/api';
+import * as api from '../services/server/api';
 
 // QueryClient for manually invalidating queries
 const queryClient = new QueryClient();
