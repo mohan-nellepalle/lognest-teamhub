@@ -26,7 +26,7 @@ const Login = () => {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Check URL params for signup tab
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -35,20 +35,26 @@ const Login = () => {
     }
   }, [location.search]);
 
-  useEffect(() => {
-    // If already authenticated, redirect to dashboard
-    if (isAuthenticated) {
-      navigate("/dashboard");
-    }
-  }, [isAuthenticated, navigate]);
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     try {
-      await login(email, password);
-      const from = location.state?.from?.pathname || "/dashboard";
+      const response = await login(email, password);
+      console.log("helloresponse", response);
+      let from = "/"
+
+      if (response?.user?.role === 'employee') {
+        console.log("hellofromworklogs");
+        navigate("/work-logs");
+        // from = '/work-logs';
+      } else if (response?.user?.role === 'admin') {
+        from = '/admin-dashboard';
+      } else if (response?.user?.role === 'hr') {
+        from = '/hr-dashboard';
+      }
       navigate(from);
     } catch (error) {
       console.error("Login failed:", error);
@@ -67,7 +73,7 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <Navbar />
-      
+
       <motion.div
         className="flex flex-grow items-center justify-center p-4"
         initial={{ opacity: 0, y: 10 }}
@@ -83,23 +89,23 @@ const Login = () => {
             <CardHeader>
               <div className="flex items-center justify-center mb-4">
                 <div className="w-10 h-10 rounded-md bg-primary flex items-center justify-center text-white">
-                  W
+                  S
                 </div>
               </div>
               <CardTitle className="text-2xl text-center">
-                Welcome to WorkLog
+                Welcome to Saavik
               </CardTitle>
               <CardDescription className="text-center">
-                {activeTab === "login" 
-                  ? "Sign in to your account to continue" 
+                {activeTab === "login"
+                  ? "Sign in to your account to continue"
                   : "Create a new account to get started"}
               </CardDescription>
               <TabsList className="grid grid-cols-2 mt-4">
                 <TabsTrigger value="login">Login</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+                {/* <TabsTrigger value="signup">Sign Up</TabsTrigger> */}
               </TabsList>
             </CardHeader>
-            
+
             <TabsContent value="login">
               <form onSubmit={handleLogin}>
                 <CardContent className="space-y-4">
@@ -118,12 +124,12 @@ const Login = () => {
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="password">Password</Label>
-                      <Link
+                      {/* <Link
                         to="/forgot-password"
                         className="text-xs text-primary hover:underline"
                       >
                         Forgot password?
-                      </Link>
+                      </Link> */}
                     </div>
                     <Input
                       id="password"
@@ -135,12 +141,7 @@ const Login = () => {
                       autoComplete="current-password"
                     />
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    <p>Demo accounts:</p>
-                    <p>admin@example.com / admin123</p>
-                    <p>employee@example.com / employee123</p>
-                    <p>hr@example.com / hr123</p>
-                  </div>
+
                 </CardContent>
                 <CardFooter>
                   <Button type="submit" className="w-full" disabled={isLoading}>
@@ -156,7 +157,7 @@ const Login = () => {
                 </CardFooter>
               </form>
             </TabsContent>
-            
+
             <TabsContent value="signup">
               <form onSubmit={handleSignup}>
                 <CardContent className="space-y-4">

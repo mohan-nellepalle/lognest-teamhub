@@ -9,13 +9,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Progress } from "@/components/ui/progress";
-import { 
-  BarChart3, 
-  Bell, 
-  Calendar, 
-  CheckCircle2, 
-  Clock, 
-  Users, 
+import {
+  BarChart3,
+  Bell,
+  Calendar,
+  CheckCircle2,
+  Clock,
+  Users,
   FileText,
   LucideIcon,
   ClipboardList,
@@ -70,10 +70,9 @@ const StatCard = ({ title, value, description, icon: Icon, change, trend }: Stat
         <p className="text-xs text-muted-foreground">{description}</p>
       )}
       {change !== undefined && (
-        <div className={`flex items-center text-xs mt-1 ${
-          trend === "up" ? "text-green-500" : 
-          trend === "down" ? "text-red-500" : "text-muted-foreground"
-        }`}>
+        <div className={`flex items-center text-xs mt-1 ${trend === "up" ? "text-green-500" :
+            trend === "down" ? "text-red-500" : "text-muted-foreground"
+          }`}>
           {trend === "up" ? "↑" : trend === "down" ? "↓" : "→"} {Math.abs(change)}% from last month
         </div>
       )}
@@ -149,7 +148,7 @@ const Dashboard = () => {
   return (
     <div className="min-h-screen flex bg-background">
       <AppSidebar />
-      
+
       <div className="flex-1 flex flex-col overflow-hidden">
         <header className="sticky top-0 z-10 h-16 bg-background/95 backdrop-blur-sm border-b flex items-center px-6">
           <h1 className="text-xl font-semibold">Dashboard</h1>
@@ -172,7 +171,7 @@ const Dashboard = () => {
             </div>
           </div>
         </header>
-        
+
         <main className="flex-1 overflow-auto p-6">
           <motion.div
             className="max-w-7xl mx-auto space-y-6"
@@ -187,7 +186,7 @@ const Dashboard = () => {
               <h2 className="text-2xl font-bold tracking-tight">Welcome back, {user?.name}</h2>
               <p className="text-muted-foreground">Here's what's happening today.</p>
             </motion.div>
-            
+
             <motion.div variants={fadeInUp} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {stats.map((stat, i) => (
                 <StatCard key={i} {...stat as StatCardProps} />
@@ -204,7 +203,7 @@ const Dashboard = () => {
                     <TabsTrigger value="team">Team</TabsTrigger>
                   )}
                 </TabsList>
-                
+
                 <TabsContent value="overview" className="space-y-4">
                   <Alert>
                     <AlertCircle className="h-4 w-4" />
@@ -213,13 +212,13 @@ const Dashboard = () => {
                       You have {mockTasks.filter(t => t.status !== "Completed").length} active tasks across {mockProjects.length} projects.
                     </AlertDescription>
                   </Alert>
-                  
+
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {mockProjects.map(project => (
                       <ProjectCard key={project.id} project={project} />
                     ))}
                   </div>
-                  
+
                   <div className="grid gap-4 md:grid-cols-2">
                     <Card>
                       <CardHeader>
@@ -229,10 +228,9 @@ const Dashboard = () => {
                         <div className="space-y-4">
                           {mockTasks.slice(0, 3).map(task => (
                             <div key={task.id} className="flex items-start gap-4 p-3 rounded-lg bg-muted/50">
-                              <div className={`h-2 w-2 rounded-full mt-2 ${
-                                task.priority === "High" ? "bg-orange-500" :
-                                task.priority === "Critical" ? "bg-red-500" : "bg-blue-500"
-                              }`} />
+                              <div className={`h-2 w-2 rounded-full mt-2 ${task.priority === "High" ? "bg-orange-500" :
+                                  task.priority === "Critical" ? "bg-red-500" : "bg-blue-500"
+                                }`} />
                               <div className="space-y-1">
                                 <p className="font-medium">{task.title}</p>
                                 <p className="text-sm text-muted-foreground">
@@ -240,11 +238,10 @@ const Dashboard = () => {
                                 </p>
                               </div>
                               <div className="ml-auto">
-                                <span className={`text-xs px-2 py-1 rounded-full ${
-                                  task.status === "In Progress" ? "bg-blue-100 text-blue-700" :
-                                  task.status === "Pending" ? "bg-orange-100 text-orange-700" : 
-                                  "bg-muted text-muted-foreground"
-                                }`}>
+                                <span className={`text-xs px-2 py-1 rounded-full ${task.status === "In Progress" ? "bg-blue-100 text-blue-700" :
+                                    task.status === "Pending" ? "bg-orange-100 text-orange-700" :
+                                      "bg-muted text-muted-foreground"
+                                  }`}>
                                   {task.status}
                                 </span>
                               </div>
@@ -253,7 +250,7 @@ const Dashboard = () => {
                         </div>
                       </CardContent>
                     </Card>
-                    
+
                     <Card>
                       <CardHeader>
                         <CardTitle className="text-lg">Upcoming Schedule</CardTitle>
@@ -286,7 +283,7 @@ const Dashboard = () => {
                     </Card>
                   </div>
                 </TabsContent>
-                
+
                 <TabsContent value="projects" className="space-y-4">
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {mockProjects.map(project => (
@@ -294,7 +291,7 @@ const Dashboard = () => {
                     ))}
                   </div>
                 </TabsContent>
-                
+
                 <TabsContent value="tasks" className="space-y-4">
                   <div className="space-y-4">
                     {mockTasks.map(task => (
@@ -302,12 +299,11 @@ const Dashboard = () => {
                         <CardHeader className="pb-2">
                           <div className="flex justify-between items-start">
                             <CardTitle className="text-base">{task.title}</CardTitle>
-                            <span className={`text-xs px-2 py-1 rounded-full ${
-                              task.status === "In Progress" ? "bg-blue-100 text-blue-700" :
-                              task.status === "Pending" ? "bg-orange-100 text-orange-700" : 
-                              task.status === "Completed" ? "bg-green-100 text-green-700" :
-                              "bg-muted text-muted-foreground"
-                            }`}>
+                            <span className={`text-xs px-2 py-1 rounded-full ${task.status === "In Progress" ? "bg-blue-100 text-blue-700" :
+                                task.status === "Pending" ? "bg-orange-100 text-orange-700" :
+                                  task.status === "Completed" ? "bg-green-100 text-green-700" :
+                                    "bg-muted text-muted-foreground"
+                              }`}>
                               {task.status}
                             </span>
                           </div>
@@ -317,12 +313,11 @@ const Dashboard = () => {
                         </CardHeader>
                         <CardContent>
                           <div className="flex justify-between items-center">
-                            <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                              task.priority === "High" ? "bg-orange-100 text-orange-700" :
-                              task.priority === "Critical" ? "bg-red-100 text-red-700" : 
-                              task.priority === "Medium" ? "bg-blue-100 text-blue-700" :
-                              "bg-muted text-muted-foreground"
-                            }`}>
+                            <span className={`text-xs font-medium px-2 py-1 rounded-full ${task.priority === "High" ? "bg-orange-100 text-orange-700" :
+                                task.priority === "Critical" ? "bg-red-100 text-red-700" :
+                                  task.priority === "Medium" ? "bg-blue-100 text-blue-700" :
+                                    "bg-muted text-muted-foreground"
+                              }`}>
                               {task.priority} Priority
                             </span>
                           </div>
@@ -331,7 +326,7 @@ const Dashboard = () => {
                     ))}
                   </div>
                 </TabsContent>
-                
+
                 {(user?.role === "admin" || user?.role === "hr") && (
                   <TabsContent value="team" className="space-y-4">
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

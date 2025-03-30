@@ -32,48 +32,48 @@ const AppSidebar = () => {
   };
 
   const navItems = [
-    {
-      name: "Dashboard",
-      path: "/dashboard",
-      icon: <LayoutDashboard className="h-5 w-5" />,
-      roles: ["admin", "employee", "hr"],
-    },
-    {
-      name: "Projects",
-      path: "/projects",
-      icon: <FileText className="h-5 w-5" />,
-      roles: ["admin", "employee", "hr"],
-    },
-    {
-      name: "Teams",
-      path: "/teams",
-      icon: <Users className="h-5 w-5" />,
-      roles: ["admin", "hr"],
-    },
-    {
-      name: "Tasks",
-      path: "/tasks",
-      icon: <ClipboardList className="h-5 w-5" />,
-      roles: ["admin", "employee", "hr"],
-    },
+    // {
+    //   name: "Dashboard",
+    //   path: "/dashboard",
+    //   icon: <LayoutDashboard className="h-5 w-5" />,
+    //   roles: ["admin", "employee", "hr"],
+    // },
+    // {
+    //   name: "Projects",
+    //   path: "/projects",
+    //   icon: <FileText className="h-5 w-5" />,
+    //   roles: ["admin", "employee", "hr"],
+    // },
+    // {
+    //   name: "Teams",
+    //   path: "/teams",
+    //   icon: <Users className="h-5 w-5" />,
+    //   roles: ["admin", "hr"],
+    // },
+    // {
+    //   name: "Tasks",
+    //   path: "/tasks",
+    //   icon: <ClipboardList className="h-5 w-5" />,
+    //   roles: ["admin", "employee", "hr"],
+    // },
     {
       name: "Work Logs",
       path: "/work-logs",
       icon: <Calendar className="h-5 w-5" />,
       roles: ["admin", "employee", "hr"],
     },
-    {
-      name: "Reports",
-      path: "/reports",
-      icon: <BarChart3 className="h-5 w-5" />,
-      roles: ["admin", "hr"],
-    },
-    {
-      name: "Settings",
-      path: "/settings",
-      icon: <Settings className="h-5 w-5" />,
-      roles: ["admin"],
-    },
+    // {
+    //   name: "Reports",
+    //   path: "/reports",
+    //   icon: <BarChart3 className="h-5 w-5" />,
+    //   roles: ["admin", "hr"],
+    // },
+    // {
+    //   name: "Settings",
+    //   path: "/settings",
+    //   icon: <Settings className="h-5 w-5" />,
+    //   roles: ["admin"],
+    // },
   ];
 
   // Filter nav items based on user role
@@ -86,9 +86,9 @@ const AppSidebar = () => {
       <SidebarHeader className="flex h-14 items-center px-4 border-b">
         <Link to="/" className="flex items-center gap-2 font-semibold">
           <div className="w-7 h-7 rounded bg-primary flex items-center justify-center text-white">
-            W
+            S
           </div>
-          <span>WorkLog</span>
+          <span>Saavik</span>
         </Link>
         <div className="ml-auto">
           <SidebarTrigger />

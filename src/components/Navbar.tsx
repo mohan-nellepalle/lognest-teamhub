@@ -22,11 +22,10 @@ const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 px-6 py-3 ${
-        transparent
+      className={`fixed top-0 left-0 right-0 z-50 px-6 py-3 ${transparent
           ? "bg-transparent"
           : "bg-background/80 backdrop-blur-md border-b"
-      } transition-all duration-300`}
+        } transition-all duration-300`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <Link
@@ -34,9 +33,9 @@ const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
           className="text-xl font-bold flex items-center group"
         >
           <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center text-white mr-2 transition-transform group-hover:scale-110 duration-300">
-            W
+            S
           </div>
-          <span>WorkLog</span>
+          <span>Saavik</span>
         </Link>
 
         <div className="flex items-center gap-4">

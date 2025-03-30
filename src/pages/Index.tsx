@@ -71,25 +71,16 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <motion.h1 
+            <motion.h1
               className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
             >
-              Streamline Your Team's
-              <span className="text-primary block mt-2">Productivity</span>
+              Saavik
+              <span className="text-primary block mt-2">Where Team is a Family</span>
             </motion.h1>
-            
-            <motion.p 
-              className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.2 }}
-            >
-              All-in-one work management platform for tracking tasks, managing projects, and organizing teams.
-            </motion.p>
-            
+
             <motion.div
               className="flex flex-col sm:flex-row items-center justify-center gap-4"
               initial={{ opacity: 0, y: 20 }}
@@ -102,7 +93,7 @@ const Index = () => {
                   <ChevronRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              
+
               <Link to="/login">
                 <Button variant="outline" size="lg" className="px-8">
                   {isAuthenticated ? "View Work Logs" : "Sign In"}
@@ -116,7 +107,7 @@ const Index = () => {
       {/* Features Section */}
       <section className="py-16 md:py-24 bg-muted/50">
         <div className="container px-4 mx-auto">
-          <motion.div
+          {/* <motion.div
             className="text-center max-w-3xl mx-auto mb-16"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -128,9 +119,9 @@ const Index = () => {
             <p className="text-lg text-muted-foreground">
               Everything you need to manage your team's work efficiently in one place.
             </p>
-          </motion.div>
+          </motion.div> */}
 
-          <motion.div
+          {/* <motion.div
             className="grid md:grid-cols-2 lg:grid-cols-4 gap-8"
             variants={container}
             initial="hidden"
@@ -148,14 +139,14 @@ const Index = () => {
                 <p className="text-muted-foreground">{feature.description}</p>
               </motion.div>
             ))}
-          </motion.div>
+          </motion.div> */}
         </div>
       </section>
 
       {/* CTA Section */}
       <section className="py-16 md:py-24">
         <div className="container px-4 mx-auto">
-          <motion.div
+          {/* <motion.div
             className="max-w-4xl mx-auto text-center bg-primary text-primary-foreground p-8 md:p-12 rounded-2xl"
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -173,7 +164,7 @@ const Index = () => {
                 Start Free Trial
               </Button>
             </Link>
-          </motion.div>
+          </motion.div> */}
         </div>
       </section>
 
@@ -183,12 +174,12 @@ const Index = () => {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
               <div className="w-7 h-7 rounded bg-primary flex items-center justify-center text-white mr-2">
-                W
+                S
               </div>
-              <span className="font-semibold">WorkLog</span>
+              <span className="font-semibold">Saavik</span>
             </div>
             <div className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} WorkLog. All rights reserved.
+              © {new Date().getFullYear()} Saavik. All rights reserved.
             </div>
           </div>
         </div>
