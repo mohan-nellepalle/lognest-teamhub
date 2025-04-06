@@ -60,6 +60,15 @@ const formatDate = (dateString: string) => {
   }
 };
 
+// Add these types at the top with other type definitions
+type WorkLogResponse = {
+  success: boolean;
+  totalRecords: number;
+  currentPage: number;
+  totalPages: number;
+  data: WorkLog[];
+};
+
 const WorkLogsPage = () => {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
@@ -69,17 +78,31 @@ const WorkLogsPage = () => {
   const isAdmin = user?.role === "admin" || user?.role === "hr";
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Fetch Work Logs from API
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+console.log("hellologind inuser",user);
+
+  // Update fetchWorkLogs function
   const fetchWorkLogs = async () => {
     setLoading(true);
     try {
-      const data = await workLogService.getWorkLogs();
-      setWorkLogs(data?.data as WorkLog[]);
+      if (!user?._id) return;
+      const response = await workLogService.getUserWorkLogs(user._id);
+      const workLogResponse = response as WorkLogResponse;
+      
+      setWorkLogs(Array.isArray(workLogResponse.data) ? workLogResponse.data : []);
+      setTotalRecords(workLogResponse.totalRecords);
+      setCurrentPage(workLogResponse.currentPage);
+      setTotalPages(workLogResponse.totalPages);
     } catch (error) {
       console.error("Failed to fetch work logs:", error);
+      setWorkLogs([]);
     } finally {
       setLoading(false);
     }
   };
+console.log("Hellosetworklogs",workLogs);
 
   useEffect(() => {
     fetchWorkLogs();
@@ -91,16 +114,18 @@ const WorkLogsPage = () => {
   console.log("helloworklogs", workLogs);
 
   // Filtered Logs
+  // Update the filteredLogs function to handle null userId
+  // Update the filteredLogs function
   const filteredLogs = workLogs.filter((log) => {
     const matchesSearch =
-      log.userId.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      log.taskId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      log.description.toLowerCase().includes(searchTerm.toLowerCase());
+      (log.userId?.name?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
+      (String(log.taskId || '').toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (log.description?.toLowerCase().includes(searchTerm.toLowerCase()) || false);
 
     if (view === "all") return matchesSearch;
     if (view === "my" && !isAdmin) return matchesSearch;
-    if (view === "today") return matchesSearch && formatDate(log.date) === "Today";
-    if (view === "yesterday") return matchesSearch && formatDate(log.date) === "Yesterday";
+    if (view === "today") return matchesSearch && formatDate(log.createdAt) === "Today";
+    if (view === "yesterday") return matchesSearch && formatDate(log.createdAt) === "Yesterday";
 
     return matchesSearch;
   });
@@ -108,7 +133,7 @@ const WorkLogsPage = () => {
   // Group logs by date
   const groupedLogs: Record<string, WorkLog[]> = {};
   filteredLogs.forEach((log) => {
-    const dateKey = formatDate(log.date);
+    const dateKey = formatDate(log.createdAt);
     if (!groupedLogs[dateKey]) {
       groupedLogs[dateKey] = [];
     }
@@ -211,16 +236,16 @@ const WorkLogsPage = () => {
                                   <div className="flex justify-between items-start">
                                     <div className="flex items-center gap-3">
                                       <Avatar className="h-8 w-8">
-                                        <AvatarImage src={log.userId.avatar} />
+                                        <AvatarImage src={log.userId?.avatar || ''} />
                                         <AvatarFallback>
-                                          {log?.userId.name.charAt(0)}
+                                          {user?.name?.charAt(0) || 'U'}
                                         </AvatarFallback>
                                       </Avatar>
                                       <div>
                                         <CardTitle className="text-base">
-                                          {log?.userId.name}
+                                          {user?.name || 'Unknown User'}
                                         </CardTitle>
-                                        <CardDescription>{log?.userId.role}</CardDescription>
+                                        <CardDescription>{user?.role || 'No Role'}</CardDescription>
                                       </div>
                                     </div>
                                     <div className="flex items-center gap-2">

@@ -42,32 +42,36 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      const response = await login(email, password);
-      console.log("helloresponse", response);
-      let from = "/"
-
-      if (response?.user?.role === 'employee') {
-        console.log("hellofromworklogs");
-        navigate("/work-logs");
-        // from = '/work-logs';
-      } else if (response?.user?.role === 'admin') {
-        from = '/admin-dashboard';
-      } else if (response?.user?.role === 'hr') {
-        from = '/hr-dashboard';
+      if (!email || !password) {
+        throw new Error('Please enter both email and password');
       }
-      navigate(from);
-    } catch (error) {
+
+      const response = await login(email, password);
+      
+      if (!response?.role) {
+        throw new Error('Invalid user role received');
+      }
+
+      // Define redirect paths based on role
+      const redirectPaths = {
+        employee: '/work-logs',
+        admin: '/dashboard',
+        hr: '/hr-dashboard'
+      };
+
+      const redirectPath = redirectPaths[response.role as keyof typeof redirectPaths] || '/';
+      navigate(redirectPath, { replace: true });
+      
+    } catch (error: any) {
       console.error("Login failed:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSignup = (e: React.FormEvent) => {
-    e.preventDefault();
-    // In a real app, this would handle signup
-    // For now, we'll just switch to login tab
-    setActiveTab("login");
+  // Add form validation
+  const isValidForm = () => {
+    return email.includes('@') && password.length >= 6;
   };
 
   return (
@@ -119,18 +123,11 @@ const Login = () => {
                       onChange={(e) => setEmail(e.target.value)}
                       required
                       autoComplete="email"
+                      className={email && !email.includes('@') ? 'border-red-500' : ''}
                     />
                   </div>
                   <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <Label htmlFor="password">Password</Label>
-                      {/* <Link
-                        to="/forgot-password"
-                        className="text-xs text-primary hover:underline"
-                      >
-                        Forgot password?
-                      </Link> */}
-                    </div>
+                    <Label htmlFor="password">Password</Label>
                     <Input
                       id="password"
                       type="password"
@@ -139,12 +136,16 @@ const Login = () => {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       autoComplete="current-password"
+                      className={password && password.length < 6 ? 'border-red-500' : ''}
                     />
                   </div>
-
                 </CardContent>
                 <CardFooter>
-                  <Button type="submit" className="w-full" disabled={isLoading}>
+                  <Button 
+                    type="submit" 
+                    className="w-full" 
+                    disabled={isLoading || !isValidForm()}
+                  >
                     {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -159,7 +160,7 @@ const Login = () => {
             </TabsContent>
 
             <TabsContent value="signup">
-              <form onSubmit={handleSignup}>
+              <form onSubmit={handleLogin}>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="signup-name">Full Name</Label>

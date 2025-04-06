@@ -1,9 +1,9 @@
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useAuth } from "../context/AuthContext";
-import { useToast } from "@/components/ui/use-toast";
 import AppSidebar from "../components/Sidebar";
+import { workLogService } from "@/services/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -21,6 +21,8 @@ import {
   ClipboardList,
   AlertCircle
 } from "lucide-react";
+import AdminView from "@/components/AdminView";
+import { useNavigate } from "react-router-dom";
 
 // Sample data - would come from API in real app
 const mockProjects = [
@@ -29,19 +31,9 @@ const mockProjects = [
   { id: 3, name: "Marketing Campaign", progress: 90, tasks: 8, completed: 7 },
 ];
 
-const mockTasks = [
-  { id: 1, title: "Update homepage design", priority: "High", dueDate: "2023-08-15", status: "In Progress", project: "Website Redesign" },
-  { id: 2, title: "Fix navigation bug on mobile", priority: "Critical", dueDate: "2023-08-12", status: "Pending", project: "Website Redesign" },
-  { id: 3, title: "Create content for blog section", priority: "Medium", dueDate: "2023-08-20", status: "To Do", project: "Marketing Campaign" },
-  { id: 4, title: "Implement authentication", priority: "High", dueDate: "2023-08-18", status: "In Progress", project: "Mobile App Development" },
-];
+ 
 
-const mockTeamMembers = [
-  { id: 1, name: "John Doe", role: "Frontend Developer", avatar: "/avatar1.jpg", tasksCompleted: 15, hoursLogged: 37 },
-  { id: 2, name: "Jane Smith", role: "UI/UX Designer", avatar: "/avatar2.jpg", tasksCompleted: 12, hoursLogged: 32 },
-  { id: 3, name: "Mike Johnson", role: "Backend Developer", avatar: "/avatar3.jpg", tasksCompleted: 18, hoursLogged: 40 },
-  { id: 4, name: "Sarah Williams", role: "Project Manager", avatar: "/avatar4.jpg", tasksCompleted: 8, hoursLogged: 35 },
-];
+ 
 
 const mockNotifications = [
   { id: 1, message: "New task assigned: Update product features", time: "2 hours ago", read: false },
@@ -71,7 +63,7 @@ const StatCard = ({ title, value, description, icon: Icon, change, trend }: Stat
       )}
       {change !== undefined && (
         <div className={`flex items-center text-xs mt-1 ${trend === "up" ? "text-green-500" :
-            trend === "down" ? "text-red-500" : "text-muted-foreground"
+          trend === "down" ? "text-red-500" : "text-muted-foreground"
           }`}>
           {trend === "up" ? "↑" : trend === "down" ? "↓" : "→"} {Math.abs(change)}% from last month
         </div>
@@ -99,50 +91,83 @@ const ProjectCard = ({ project }: { project: typeof mockProjects[0] }) => (
   </Card>
 );
 
+
+
+// Add this type definition
+type WorkLog = {
+  _id: string;
+  userId: {
+    _id: string;
+    name: string;
+    role: string;
+  };
+  timeSpent: number;
+  date: string;
+  description?: string;
+};
+
+// Add new type for User
+type User = {
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+  avatar?: string;
+};
+
+// Add import at the top
+import { userService } from '@/services/api';
+
 const Dashboard = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
+  const [users, setUsers] = useState<User[]>([]);
+  const [teamTimesheets, setTeamTimesheets] = useState<WorkLog[]>([]); // Add this line
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    toast({
-      title: "Welcome to your dashboard",
-      description: `Hello, ${user?.name}! You're logged in as ${user?.role}.`,
-    });
-  }, [user, toast]);
-
-  // Different stats based on user role
-  const getRoleBasedStats = () => {
-    switch (user?.role) {
-      case "admin":
-        return [
-          { title: "Total Projects", value: 12, icon: FileText, change: 8, trend: "up" },
-          { title: "Active Team Members", value: 24, icon: Users, change: 12, trend: "up" },
-          { title: "Tasks Completed", value: 142, description: "This month", icon: CheckCircle2, change: 3, trend: "down" },
-          { title: "Hours Logged", value: 568, description: "This month", icon: Clock, change: 10, trend: "up" },
-        ];
-      case "hr":
-        return [
-          { title: "Team Members", value: 24, icon: Users, change: 12, trend: "up" },
-          { title: "Average Hours", value: "38h", description: "Per person", icon: Clock, change: 5, trend: "up" },
-          { title: "Projects Assigned", value: 8, icon: FileText, change: 0, trend: "neutral" },
-          { title: "Pending Approvals", value: 7, icon: ClipboardList, change: 2, trend: "down" },
-        ];
-      case "employee":
-      default:
-        return [
-          { title: "My Tasks", value: 8, description: "5 in progress", icon: ClipboardList, change: 2, trend: "up" },
-          { title: "Hours Logged", value: "32h", description: "This week", icon: Clock, change: 4, trend: "up" },
-          { title: "Projects", value: 3, description: "Currently assigned", icon: FileText, change: 0, trend: "neutral" },
-          { title: "Completed Tasks", value: 24, description: "This month", icon: CheckCircle2, change: 16, trend: "up" },
-        ];
+  // Add function to fetch users
+  const fetchUsers = async () => {
+    try {
+      const response = await userService.getUsers();
+      console.log("Fetched users:", response);
+      if (response.success) {
+        setUsers(response.data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+      setUsers([]);
     }
   };
 
-  const stats = getRoleBasedStats();
+  useEffect(() => {
+    if (user?.role === 'admin') {
+      fetchUsers();
+    }
+  }, [user]);
 
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
+  // Add function to fetch timesheets
+  const fetchTeamTimesheets = async () => {
+    try {
+      const response = await workLogService.getAllWorkLogs();
+      if (response.success && Array.isArray(response.data)) {
+        console.log("Fetched timesheets:", response.data);
+        
+        setTeamTimesheets(response.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch team timesheets:', error);
+      setTeamTimesheets([]);
+    }
+  };
+
+  useEffect(() => {
+    if (user?.role === 'admin') {
+      fetchUsers();
+      fetchTeamTimesheets(); // Add this line
+    }
+  }, [user]);
+
+  const handleUserClick = (userId: string) => {
+    navigate(`/user-details/${userId}`);
   };
 
   return (
@@ -182,44 +207,50 @@ const Dashboard = () => {
               visible: { transition: { staggerChildren: 0.1 } }
             }}
           >
-            <motion.div variants={fadeInUp}>
+            <motion.div variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 }
+            }}>
               <h2 className="text-2xl font-bold tracking-tight">Welcome back, {user?.name}</h2>
               <p className="text-muted-foreground">Here's what's happening today.</p>
             </motion.div>
 
-            <motion.div variants={fadeInUp} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {/* <motion.div variants={fadeInUp} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
               {stats.map((stat, i) => (
                 <StatCard key={i} {...stat as StatCardProps} />
               ))}
-            </motion.div>
+            </motion.div> */}
 
-            <motion.div variants={fadeInUp}>
-              <Tabs defaultValue="overview" className="space-y-4">
+            <motion.div variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 }
+            }}>
+              {/* Update the defaultValue to "team" */}
+              <Tabs defaultValue="team" className="space-y-4">
                 <TabsList>
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="projects">Projects</TabsTrigger>
-                  <TabsTrigger value="tasks">Tasks</TabsTrigger>
                   {(user?.role === "admin" || user?.role === "hr") && (
                     <TabsTrigger value="team">Team</TabsTrigger>
-                  )}
+                  )}  
                 </TabsList>
 
-                <TabsContent value="overview" className="space-y-4">
-                  <Alert>
+                {/* Rest of the tabs content */}
+              
+                {/* <TabsContent value="overview" className="space-y-4"> */}
+                  {/* <Alert>
                     <AlertCircle className="h-4 w-4" />
                     <AlertTitle>Quick Summary</AlertTitle>
                     <AlertDescription>
                       You have {mockTasks.filter(t => t.status !== "Completed").length} active tasks across {mockProjects.length} projects.
                     </AlertDescription>
-                  </Alert>
+                  </Alert> */}
 
-                  <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {mockProjects.map(project => (
                       <ProjectCard key={project.id} project={project} />
                     ))}
-                  </div>
+                  </div> */}
 
-                  <div className="grid gap-4 md:grid-cols-2">
+                  {/* <div className="grid gap-4 md:grid-cols-2">
                     <Card>
                       <CardHeader>
                         <CardTitle className="text-lg">Recent Tasks</CardTitle>
@@ -229,7 +260,7 @@ const Dashboard = () => {
                           {mockTasks.slice(0, 3).map(task => (
                             <div key={task.id} className="flex items-start gap-4 p-3 rounded-lg bg-muted/50">
                               <div className={`h-2 w-2 rounded-full mt-2 ${task.priority === "High" ? "bg-orange-500" :
-                                  task.priority === "Critical" ? "bg-red-500" : "bg-blue-500"
+                                task.priority === "Critical" ? "bg-red-500" : "bg-blue-500"
                                 }`} />
                               <div className="space-y-1">
                                 <p className="font-medium">{task.title}</p>
@@ -239,8 +270,8 @@ const Dashboard = () => {
                               </div>
                               <div className="ml-auto">
                                 <span className={`text-xs px-2 py-1 rounded-full ${task.status === "In Progress" ? "bg-blue-100 text-blue-700" :
-                                    task.status === "Pending" ? "bg-orange-100 text-orange-700" :
-                                      "bg-muted text-muted-foreground"
+                                  task.status === "Pending" ? "bg-orange-100 text-orange-700" :
+                                    "bg-muted text-muted-foreground"
                                   }`}>
                                   {task.status}
                                 </span>
@@ -281,18 +312,18 @@ const Dashboard = () => {
                         </div>
                       </CardContent>
                     </Card>
-                  </div>
-                </TabsContent>
+                  </div> */}
+                {/* </TabsContent> */}
 
-                <TabsContent value="projects" className="space-y-4">
+                {/* <TabsContent value="projects" className="space-y-4">
                   <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {mockProjects.map(project => (
                       <ProjectCard key={project.id} project={project} />
                     ))}
                   </div>
-                </TabsContent>
+                </TabsContent> */}
 
-                <TabsContent value="tasks" className="space-y-4">
+                {/* <TabsContent value="tasks" className="space-y-4">
                   <div className="space-y-4">
                     {mockTasks.map(task => (
                       <Card key={task.id}>
@@ -300,9 +331,9 @@ const Dashboard = () => {
                           <div className="flex justify-between items-start">
                             <CardTitle className="text-base">{task.title}</CardTitle>
                             <span className={`text-xs px-2 py-1 rounded-full ${task.status === "In Progress" ? "bg-blue-100 text-blue-700" :
-                                task.status === "Pending" ? "bg-orange-100 text-orange-700" :
-                                  task.status === "Completed" ? "bg-green-100 text-green-700" :
-                                    "bg-muted text-muted-foreground"
+                              task.status === "Pending" ? "bg-orange-100 text-orange-700" :
+                                task.status === "Completed" ? "bg-green-100 text-green-700" :
+                                  "bg-muted text-muted-foreground"
                               }`}>
                               {task.status}
                             </span>
@@ -314,9 +345,9 @@ const Dashboard = () => {
                         <CardContent>
                           <div className="flex justify-between items-center">
                             <span className={`text-xs font-medium px-2 py-1 rounded-full ${task.priority === "High" ? "bg-orange-100 text-orange-700" :
-                                task.priority === "Critical" ? "bg-red-100 text-red-700" :
-                                  task.priority === "Medium" ? "bg-blue-100 text-blue-700" :
-                                    "bg-muted text-muted-foreground"
+                              task.priority === "Critical" ? "bg-red-100 text-red-700" :
+                                task.priority === "Medium" ? "bg-blue-100 text-blue-700" :
+                                  "bg-muted text-muted-foreground"
                               }`}>
                               {task.priority} Priority
                             </span>
@@ -325,38 +356,95 @@ const Dashboard = () => {
                       </Card>
                     ))}
                   </div>
-                </TabsContent>
+                </TabsContent> */}
 
-                {(user?.role === "admin" || user?.role === "hr") && (
+                 {(user?.role === "admin" || user?.role === "hr") && (
                   <TabsContent value="team" className="space-y-4">
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                      {mockTeamMembers.map(member => (
-                        <Card key={member.id}>
-                          <CardHeader className="pb-2 text-center">
-                            <div className="flex justify-center mb-2">
-                              <Avatar className="h-16 w-16">
-                                <AvatarImage src={member.avatar} />
-                                <AvatarFallback>{member.name?.charAt(0) || "U"}</AvatarFallback>
-                              </Avatar>
-                            </div>
-                            <CardTitle className="text-base">{member.name}</CardTitle>
-                            <CardDescription>{member.role}</CardDescription>
-                          </CardHeader>
-                          <CardContent className="text-center">
-                            <div className="flex justify-around text-sm">
-                              <div>
-                                <p className="font-bold">{member.tasksCompleted}</p>
-                                <p className="text-xs text-muted-foreground">Tasks</p>
+                      {users && users.length > 0 ? (
+                        users.map((member) => (
+                          <Card 
+                            key={member._id} 
+                            className="cursor-pointer hover:bg-muted/50 transition-colors"
+                            onClick={() => handleUserClick(member._id)}
+                          >
+                            <CardHeader className="pb-2 text-center">
+                              <div className="flex justify-center mb-2">
+                                <Avatar className="h-16 w-16">
+                                  <AvatarImage src={member.avatar} />
+                                  <AvatarFallback>{member.name?.charAt(0) || "U"}</AvatarFallback>
+                                </Avatar>
                               </div>
-                              <div>
-                                <p className="font-bold">{member.hoursLogged}h</p>
-                                <p className="text-xs text-muted-foreground">Logged</p>
+                              <CardTitle className="text-base">{member.name}</CardTitle>
+                              <CardDescription className="capitalize">{member.role}</CardDescription>
+                            </CardHeader>
+                            <CardContent className="text-center">
+                              <div className="space-y-2">
+                                <p className="text-sm text-muted-foreground">{member.email}</p>
+                                <div className="flex justify-around text-sm">
+                                  <div>
+                                    <p className="font-bold capitalize">Role</p>
+                                    <p className="text-xs text-muted-foreground">{member.role}</p>
+                                  </div>
+                                  <div>
+                                    <p className="font-bold">Status</p>
+                                    <p className="text-xs text-green-600">Active</p>
+                                  </div>
+                                </div>
                               </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
+                            </CardContent>
+                          </Card>
+                        ))
+                      ) : (
+                        <div className="col-span-4 text-center py-8 text-muted-foreground">
+                          No team members found
+                        </div>
+                      )}
                     </div>
+                  </TabsContent>
+                )}  
+                {(user?.role === "admin" || user?.role === "hr") && (
+                  <TabsContent value="timesheets" className="space-y-4">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle>Team Timesheets</CardTitle>
+                        <CardDescription>Recent time entries from all team members</CardDescription>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          {teamTimesheets && teamTimesheets.length > 0 ? (
+                            teamTimesheets.map((log) => (
+                              <div key={log._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50">
+                                <div className="flex items-center gap-3">
+                                  <Avatar className="h-8 w-8">
+                                    <AvatarFallback>
+                                      {log.userId?.name ? log.userId.name.charAt(0) : 'U'}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <p className="font-medium">{log.userId?.name || 'Unknown User'}</p>
+                                    <p className="text-sm text-muted-foreground">{log.userId?.role || 'No Role'}</p>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                  <div className="flex items-center gap-1">
+                                    <Clock className="h-4 w-4 text-muted-foreground" />
+                                    <span>{log.timeSpent} hours</span>
+                                  </div>
+                                  <div className="text-sm text-muted-foreground">
+                                    {new Date(log.date).toLocaleDateString()}
+                                  </div>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="text-center py-4 text-muted-foreground">
+                              No timesheet entries found
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
                   </TabsContent>
                 )}
               </Tabs>
@@ -367,5 +455,8 @@ const Dashboard = () => {
     </div>
   );
 };
+
+
+
 
 export default Dashboard;

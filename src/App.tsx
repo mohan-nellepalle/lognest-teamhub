@@ -17,6 +17,8 @@ import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
+import UserDetails from "./pages/UserDetails";
+import AddEmployee from "./pages/AddEmployee";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +89,21 @@ const App = () => (
               </ProtectedRoute>
             } />
             
+             <Route path="/user-details/:userId" element={
+              <ProtectedRoute>
+                <SidebarProvider>
+                  <UserDetails />
+                </SidebarProvider>
+              </ProtectedRoute>
+            } />
+             <Route path="/add-employee" element={
+              <ProtectedRoute>
+                <SidebarProvider>
+                  <AddEmployee />
+                </SidebarProvider>
+              </ProtectedRoute>
+            } />
+            {/* <Route path="/user-details/:userId" element={<UserDetails />} /> */}
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

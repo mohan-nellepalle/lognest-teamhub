@@ -31,13 +31,20 @@ const AppSidebar = () => {
     return location.pathname === path;
   };
 
+  // Add this to your navItems array
   const navItems = [
-    // {
-    //   name: "Dashboard",
-    //   path: "/dashboard",
-    //   icon: <LayoutDashboard className="h-5 w-5" />,
-    //   roles: ["admin", "employee", "hr"],
-    // },
+    {
+      name: "Dashboard",
+      path: "/dashboard",
+      icon: <LayoutDashboard className="h-5 w-5" />,
+      roles: ["admin","hr"],
+    },
+    {
+      name: "Add Employee",
+      path: "/add-employee",
+      icon: <Users className="h-5 w-5" />,
+      roles: ["admin", "hr"],
+    },
     // {
     //   name: "Projects",
     //   path: "/projects",
@@ -60,7 +67,7 @@ const AppSidebar = () => {
       name: "Work Logs",
       path: "/work-logs",
       icon: <Calendar className="h-5 w-5" />,
-      roles: ["admin", "employee", "hr"],
+      roles: ["employee"],
     },
     // {
     //   name: "Reports",
@@ -81,8 +88,9 @@ const AppSidebar = () => {
     user?.role ? item.roles.includes(user.role) : false
   );
 
+  // Update the Sidebar component
   return (
-    <Sidebar className="border-r">
+    <Sidebar className="border-r hidden md:block">
       <SidebarHeader className="flex h-14 items-center px-4 border-b">
         <Link to="/" className="flex items-center gap-2 font-semibold">
           <div className="w-7 h-7 rounded bg-primary flex items-center justify-center text-white">
@@ -90,7 +98,7 @@ const AppSidebar = () => {
           </div>
           <span>Saavik</span>
         </Link>
-        <div className="ml-auto">
+        <div className="ml-auto md:hidden">
           <SidebarTrigger />
         </div>
       </SidebarHeader>

@@ -81,6 +81,9 @@ const LogWorkModal = ({ isOpen, onClose, onWorkLogAdded }: any) => {
         }
     };
 
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
+
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-lg">
@@ -137,6 +140,8 @@ const LogWorkModal = ({ isOpen, onClose, onWorkLogAdded }: any) => {
                             name="date"
                             value={formData.date}
                             onChange={handleChange}
+                            min={today} // This prevents selecting past dates
+                            max={today}
                         />
                         {errors.date && <p className="text-red-500 text-sm">{errors.date}</p>}
                     </div>

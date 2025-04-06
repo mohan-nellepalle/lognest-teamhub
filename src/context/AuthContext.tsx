@@ -23,14 +23,13 @@ type AuthContextType = {
   logout: () => void;
 };
 
+// Update LoginResponse type to match actual API response
 type LoginResponse = {
-  user: {
-    name: string;
-    email: string;
-    role: string;
-  };
-  token?: string;
-  message?: string;
+  _id: string;
+  name: string;
+  email: string;
+  role: string;
+  token: string;
 };
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -55,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:5000/api/authUser/login`, {
+      const response = await fetch(`http://localhost:5000/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -63,25 +62,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         body: JSON.stringify({ email, password }),
       });
 
-
-      const data: LoginResponse = await response.json();
+      const data = await response.json();
       console.log("hellologindata", data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
+        throw new Error(data.message || 'Invalid credentials');
       }
 
-      // setUser(data.user);
-      localStorage.setItem('saavik_user', JSON.stringify(data.user));
+      // Create userData from the direct response
+      const userData: User = {
+        _id: data._id,
+        name: data.name,
+        email: data.email,
+        role: data.role as 'admin' | 'employee' | 'hr',
+        avatar: data.avatar
+      };
+      
+      setUser(userData);
+      localStorage.setItem('saavik_user', JSON.stringify(userData));
+
+      if (data.token) {
+        localStorage.setItem('saavik_token', data.token);
+      }
+
       toast({
         title: "Login Successful",
-        description: `Welcome back, ${data.user.name}`,
+        description: `Welcome back, ${userData.name}`,
       });
+      
       return data;
     } catch (error: any) {
+      const errorMessage = error.message || 'An error occurred during login';
+      console.error('Login error:', error);
       toast({
         title: "Login Failed",
-        description: error.message,
+        description: errorMessage,
         variant: "destructive",
       });
       throw error;
