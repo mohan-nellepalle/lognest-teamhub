@@ -31,9 +31,9 @@ const mockProjects = [
   { id: 3, name: "Marketing Campaign", progress: 90, tasks: 8, completed: 7 },
 ];
 
- 
 
- 
+
+
 
 const mockNotifications = [
   { id: 1, message: "New task assigned: Update product features", time: "2 hours ago", read: false },
@@ -150,7 +150,7 @@ const Dashboard = () => {
       const response = await workLogService.getAllWorkLogs();
       if (response.success && Array.isArray(response.data)) {
         console.log("Fetched timesheets:", response.data);
-        
+
         setTeamTimesheets(response.data);
       }
     } catch (error) {
@@ -175,21 +175,22 @@ const Dashboard = () => {
       <AppSidebar />
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="sticky top-0 z-10 h-16 bg-background/95 backdrop-blur-sm border-b flex items-center px-6">
+        {/* Update header for better laptop responsiveness */}
+        <header className="sticky top-0 z-10 h-16 bg-background/95 backdrop-blur-sm border-b flex items-center px-4 lg:px-6">
           <h1 className="text-xl font-semibold">Dashboard</h1>
-          <div className="ml-auto flex items-center gap-4">
+          <div className="ml-auto flex items-center gap-2 lg:gap-4">
             <div className="relative">
               <Bell className="h-5 w-5 text-muted-foreground hover:text-foreground cursor-pointer" />
               <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] text-primary-foreground">
                 {mockNotifications.filter(n => !n.read).length}
               </span>
             </div>
-            <div className="hidden md:flex items-center gap-2">
+            <div className="flex items-center gap-2">
               <Avatar className="h-8 w-8">
                 <AvatarImage src={user?.avatar} />
                 <AvatarFallback>{user?.name?.charAt(0) || "U"}</AvatarFallback>
               </Avatar>
-              <div>
+              <div className="hidden sm:block">
                 <p className="text-sm font-medium leading-none">{user?.name}</p>
                 <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
               </div>
@@ -197,7 +198,7 @@ const Dashboard = () => {
           </div>
         </header>
 
-        <main className="flex-1 overflow-auto p-6">
+        <main className="flex-1 overflow-auto p-4 lg:p-6">
           <motion.div
             className="max-w-7xl mx-auto space-y-6"
             initial="hidden"
@@ -230,13 +231,13 @@ const Dashboard = () => {
                 <TabsList>
                   {(user?.role === "admin" || user?.role === "hr") && (
                     <TabsTrigger value="team">Team</TabsTrigger>
-                  )}  
+                  )}
                 </TabsList>
 
                 {/* Rest of the tabs content */}
-              
+
                 {/* <TabsContent value="overview" className="space-y-4"> */}
-                  {/* <Alert>
+                {/* <Alert>
                     <AlertCircle className="h-4 w-4" />
                     <AlertTitle>Quick Summary</AlertTitle>
                     <AlertDescription>
@@ -244,13 +245,13 @@ const Dashboard = () => {
                     </AlertDescription>
                   </Alert> */}
 
-                  {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {/* <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {mockProjects.map(project => (
                       <ProjectCard key={project.id} project={project} />
                     ))}
                   </div> */}
 
-                  {/* <div className="grid gap-4 md:grid-cols-2">
+                {/* <div className="grid gap-4 md:grid-cols-2">
                     <Card>
                       <CardHeader>
                         <CardTitle className="text-lg">Recent Tasks</CardTitle>
@@ -358,13 +359,13 @@ const Dashboard = () => {
                   </div>
                 </TabsContent> */}
 
-                 {(user?.role === "admin" || user?.role === "hr") && (
+                {(user?.role === "admin" || user?.role === "hr") && (
                   <TabsContent value="team" className="space-y-4">
-                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                       {users && users.length > 0 ? (
                         users.map((member) => (
-                          <Card 
-                            key={member._id} 
+                          <Card
+                            key={member._id}
                             className="cursor-pointer hover:bg-muted/50 transition-colors"
                             onClick={() => handleUserClick(member._id)}
                           >
@@ -402,7 +403,7 @@ const Dashboard = () => {
                       )}
                     </div>
                   </TabsContent>
-                )}  
+                )}
                 {(user?.role === "admin" || user?.role === "hr") && (
                   <TabsContent value="timesheets" className="space-y-4">
                     <Card>
@@ -411,11 +412,11 @@ const Dashboard = () => {
                         <CardDescription>Recent time entries from all team members</CardDescription>
                       </CardHeader>
                       <CardContent>
-                        <div className="space-y-4">
+                        <div className="space-y-3">
                           {teamTimesheets && teamTimesheets.length > 0 ? (
                             teamTimesheets.map((log) => (
-                              <div key={log._id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50">
-                                <div className="flex items-center gap-3">
+                              <div key={log._id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 lg:p-4 border rounded-lg hover:bg-muted/50">
+                                <div className="flex items-center gap-3 mb-2 sm:mb-0">
                                   <Avatar className="h-8 w-8">
                                     <AvatarFallback>
                                       {log.userId?.name ? log.userId.name.charAt(0) : 'U'}

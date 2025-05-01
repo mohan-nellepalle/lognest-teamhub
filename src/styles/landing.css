@@ -1,0 +1,126 @@
+.landing-page {
+  font-family: 'Inter', sans-serif;
+}
+
+.hero {
+  background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+}
+
+.hero h1 {
+  font-size: 3.5rem;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+.btn-danger {
+  background-color: #ff3e3e;
+  border: none;
+  padding: 0.8rem 2rem;
+  transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: #ff2525;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(255, 62, 62, 0.3);
+}
+
+.card {
+  transition: all 0.3s ease;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  color: #ff3e3e;
+  font-weight: 600;
+}
+
+.industries {
+  background: linear-gradient(45deg, #1a1a1a, #2d2d2d);
+}
+
+.industry-card {
+  transition: all 0.3s ease;
+  border: 1px solid rgba(255, 62, 62, 0.1);
+}
+
+.industry-card:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 62, 62, 0.2);
+}
+
+.portfolio-item {
+  overflow: hidden;
+  border-radius: 10px;
+}
+
+.portfolio-item img {
+  transition: all 0.5s ease;
+}
+
+.portfolio-item:hover img {
+  transform: scale(1.1);
+}
+
+.overlay {
+  background: rgba(255, 62, 62, 0.8);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.portfolio-item:hover .overlay {
+  opacity: 1;
+}
+
+.contact form {
+  transition: all 0.3s ease;
+}
+
+.form-control {
+  border: 1px solid #ddd;
+  padding: 0.8rem;
+  border-radius: 5px;
+}
+
+.form-control:focus {
+  border-color: #ff3e3e;
+  box-shadow: 0 0 0 0.2rem rgba(255, 62, 62, 0.25);
+}
+
+footer a {
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+footer a:hover {
+  color: #ff3e3e !important;
+}
+
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero {
+    text-align: center;
+    padding: 4rem 0;
+  }
+  
+  .contact {
+    text-align: center;
+  }
+  
+  .contact form {
+    margin-top: 2rem;
+  }
+}

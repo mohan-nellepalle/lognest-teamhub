@@ -47,7 +47,7 @@ const Login = () => {
       }
 
       const response = await login(email, password);
-      
+
       if (!response?.role) {
         throw new Error('Invalid user role received');
       }
@@ -61,7 +61,7 @@ const Login = () => {
 
       const redirectPath = redirectPaths[response.role as keyof typeof redirectPaths] || '/';
       navigate(redirectPath, { replace: true });
-      
+
     } catch (error: any) {
       console.error("Login failed:", error);
     } finally {
@@ -104,10 +104,10 @@ const Login = () => {
                   ? "Sign in to your account to continue"
                   : "Create a new account to get started"}
               </CardDescription>
-              <TabsList className="grid grid-cols-2 mt-4">
+              {/* <TabsList className="grid grid-cols-1 mt-4">
                 <TabsTrigger value="login">Login</TabsTrigger>
-                {/* <TabsTrigger value="signup">Sign Up</TabsTrigger> */}
-              </TabsList>
+                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              </TabsList> */}
             </CardHeader>
 
             <TabsContent value="login">
@@ -141,9 +141,9 @@ const Login = () => {
                   </div>
                 </CardContent>
                 <CardFooter>
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
+                  <Button
+                    type="submit"
+                    className="w-full"
                     disabled={isLoading || !isValidForm()}
                   >
                     {isLoading ? (

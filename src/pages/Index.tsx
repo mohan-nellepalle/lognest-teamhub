@@ -94,7 +94,7 @@ const Index = () => {
                 </Button>
               </Link>
 
-              <Link to="/login">
+              <Link to={isAuthenticated ? "/work-logs" : "/login"}>
                 <Button variant="outline" size="lg" className="px-8">
                   {isAuthenticated ? "View Work Logs" : "Sign In"}
                 </Button>

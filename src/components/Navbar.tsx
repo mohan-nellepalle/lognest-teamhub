@@ -23,8 +23,8 @@ const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 px-6 py-3 ${transparent
-          ? "bg-transparent"
-          : "bg-background/80 backdrop-blur-md border-b"
+        ? "bg-transparent"
+        : "bg-background/80 backdrop-blur-md border-b"
         } transition-all duration-300`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -93,14 +93,12 @@ const Navbar: React.FC<NavbarProps> = ({ transparent = false }) => {
             </div>
           ) : (
             <div className="flex items-center gap-2">
-              <Link to="/login">
+              {/* <Link to="/login">
                 <Button variant="ghost" size="sm">
                   Log in
                 </Button>
-              </Link>
-              <Link to="/login?signup=true">
-                <Button size="sm">Sign up</Button>
-              </Link>
+              </Link> */}
+
             </div>
           )}
         </div>
