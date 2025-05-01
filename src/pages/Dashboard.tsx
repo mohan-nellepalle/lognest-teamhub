@@ -77,7 +77,7 @@ const ProjectCard = ({ project }: { project: typeof mockProjects[0] }) => (
     <CardHeader className="pb-2 1">
       <CardTitle className="text-lg">{project.name}</CardTitle>
       <CardDescription>
-        {project.completed} of {project.tasks} tasks completed
+        {project.completed} of {project.tasks} Tasks completed
       </CardDescription>
     </CardHeader>
     <CardContent>
