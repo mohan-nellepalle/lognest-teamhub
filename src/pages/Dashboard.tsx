@@ -74,7 +74,7 @@ const StatCard = ({ title, value, description, icon: Icon, change, trend }: Stat
 
 const ProjectCard = ({ project }: { project: typeof mockProjects[0] }) => (
   <Card>
-    <CardHeader className="pb-2">
+    <CardHeader className="pb-2 1">
       <CardTitle className="text-lg">{project.name}</CardTitle>
       <CardDescription>
         {project.completed} of {project.tasks} tasks completed
